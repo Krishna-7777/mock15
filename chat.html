@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+</head>
+<style>
+    form{
+        position: fixed;
+        bottom: 0px;
+        width: 96%;
+        display: flex;
+        justify-content: space-between;
+        padding: 2%;
+    }
+    input:nth-child(1){
+        width:95%
+    }
+    .other{
+        text-align: end;
+    }
+</style>
+
+<body>
+    <form>
+        <input type="text" name="">
+        <input type="submit" value="Send">
+    </form>
+    <div id="msg">
+
+    </div>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        var socket = io();
+        const searchParams = new URLSearchParams(document.URL);
+        let arr = []
+        for (let i of searchParams.values()) arr.push(i)
+        console.log(arr)
+        socket.emit("name", arr[0])
+        document.querySelector("form").addEventListener("submit",(e)=>{
+            e.preventDefault()
+            let msg=document.querySelector("input").value
+            document.getElementById("msg").innerHTML+=`<div>
+                    <h4>${arr[0]}</h4>
+                    <p>${msg}</p>
+                </div>`
+            socket.emit("msg",{
+            "from":arr[0],
+            "to":arr[1],
+            msg
+        })
+        })
+        
+        socket.on("rmsg", (m) => {
+            document.getElementById("msg").innerHTML+=`<div class="other">
+                    <h4>${arr[1]}</h4>
+                    <p>${m}</p>
+                </div>`
+        })
+    </script>
+</body>
+
+</html>
