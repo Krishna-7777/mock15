@@ -34,7 +34,7 @@ userRoutes.post('/login',async(ask,give)=>{
             let res=await bcrypt.compare(payload.password,userSearch.password)
             if(res){
                 let token= await jwt.sign({id:userSearch._id},process.env.secret)
-                give.send({msg:"Login Successfull",token})
+                give.send({msg:"Login Successfull",token,name:userSearch.name})
             }else{
                 give.send({msg:"Wrong Credentials"})
             }
